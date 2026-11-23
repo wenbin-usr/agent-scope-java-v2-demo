@@ -8,11 +8,9 @@ import io.agentscope.core.permission.PermissionMode;
 import io.agentscope.harness.agent.HarnessAgent;
 import io.agentscope.harness.agent.tools.McpServerConfig;
 import io.agentscope.harness.agent.tools.ToolsConfig;
-import io.modelcontextprotocol.spec.McpSchema;
 
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,7 +59,7 @@ public class McpDemo {
         try (HarnessAgent agent = builder.build()) {
             RuntimeContext ctx = RuntimeContext.builder()
                     .userId("wenbin").sessionId("mcp-demo-session").build();
-            Msg reply = agent.call(new UserMessage("帮我查一下北京今天的天气，告诉我查询结果。"), ctx).block();
+            Msg reply = agent.call(new UserMessage("帮我查一下深圳今天的天气，告诉我查询结果。"), ctx).block();
             System.out.println("=== Agent 回复 ===");
             System.out.println(reply.getTextContent());
         }
