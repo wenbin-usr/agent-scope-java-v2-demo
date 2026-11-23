@@ -5,9 +5,6 @@ import io.agentscope.core.message.Msg;
 import io.agentscope.core.message.UserMessage;
 import io.agentscope.core.permission.PermissionContextState;
 import io.agentscope.core.permission.PermissionMode;
-import io.agentscope.core.state.InMemoryAgentStateStore;
-import io.agentscope.core.tool.mcp.McpClientBuilder;
-import io.agentscope.core.tool.mcp.McpClientWrapper;
 import io.agentscope.harness.agent.HarnessAgent;
 import io.agentscope.harness.agent.tools.McpServerConfig;
 import io.agentscope.harness.agent.tools.ToolsConfig;
@@ -32,7 +29,6 @@ public class McpDemo {
     private static final String MODEL = "dashscope:qwen3.8-max-0902";
 
     public static void main(String[] args) {
-        listTools();
 
         ToolsConfig toolsConfig = new ToolsConfig();
         // 保留 Agent 内置工具，避免 toolsConfig 只放行 MCP 工具
@@ -71,25 +67,4 @@ public class McpDemo {
         }
     }
 
-    /** 直连 MCP server，确认连通性并查看工具清单。 */
-    private static void listTools() {
-        try (McpClientWrapper client = McpClientBuilder.create(SERVER_NAME)
-                .streamableHttpTransport(MCP_URL)
-                .timeout(Duration.ofSeconds(30))
-                .buildSync()) {
-            client.initialize().block();
-            List<McpSchema.Tool> tools = client.listTools().block();
-
-            System.out.println("=== MCP server 工具列表 ===");
-            if (tools == null || tools.isEmpty()) {
-                System.out.println("(无工具)");
-                return;
-            }
-            for (McpSchema.Tool tool : tools) {
-                System.out.printf("- %s: %s%n", tool.name(), tool.description());
-            }
-        } catch (Exception e) {
-            System.err.println("连接 MCP server 失败: " + e.getMessage());
-        }
-    }
 }
